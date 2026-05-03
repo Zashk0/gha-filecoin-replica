@@ -1,0 +1,23 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+env:
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: 1
+
+jobs:
+  test_release:
+    # Filecoin uses ['self-hosted', 'linux', 'x64', '4xlarge']
+    # We use ubuntu-latest for the public PoC; primitive is identical.
+    runs-on: ubuntu-latest
+    name: Test in release mode
+    env:
+      RUNNER_PRETEND_SECRET: ${{ secrets.RUNNER_PRETEND_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.91.0
+      - name: Run cargo test (release)
+        run: cargo test --release
